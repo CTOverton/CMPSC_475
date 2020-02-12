@@ -1,0 +1,64 @@
+{
+  "structures": {
+    "Binary Search Tree": {
+      "avg": {
+        "Get Min": "Get Minimum: Θ(log(n))",
+        "Insert": "Insert: Θ(log(n))",
+        "Search": "Search: Θ(log(n))"
+      },
+      "worst": {
+        "Get Min": "Get Minimum: O(n)",
+        "Insert": "Insert: O(n)",
+        "Search": "Search: O(n)"
+      }
+    },
+    "2–3 Tree": {
+      "avg": {
+        "Get Min": "Get Minimum: Θ(log(n))",
+        "Insert": "Insert: Θ(log(n))",
+        "Search": "Search: Θ(log(n))"
+      },
+      "worst": {
+        "Get Min": "Get Minimum: Θ(log(n))",
+        "Insert": "Insert: Θ(log(n))",
+        "Search": "Search: Θ(log(n))"
+      }
+    },
+    "Hash Table": {
+      "avg": {
+        "Get Min": "Get Minimum: Θ(1)",
+        "Insert": "Insert: Θ(1)",
+        "Search": "Search: Θ(1)"
+      },
+      "worst": {
+        "Get Min": "Get Minimum: O(n)",
+        "Insert": "Insert: O(n)",
+        "Search": "Search: O(n)"
+      }
+    },
+    "Linked List": {
+      "avg": {
+        "Get Min": "Get Minimum: Θ(n)",
+        "Insert": "Insert: Θ(1)",
+        "Search": "Search: Θ(n)"
+      },
+      "worst": {
+        "Get Min": "Get Minimum: Θ(n)",
+        "Insert": "Insert: Θ(1)",
+        "Search": "Search: Θ(n)"
+      }
+    },
+    "Min Heap": {
+      "avg": {
+        "Get Min": "Get Minimum: Θ(1)",
+        "Insert": "Insert: Θ(log(n))",
+        "Search": "Search: Θ(log(n))"
+      },
+      "worst": {
+        "Get Min": "Get Minimum: Θ(1)",
+        "Insert": "Insert: O(n)",
+        "Search": "Search: O(n)"
+      }
+    }
+  }
+}
