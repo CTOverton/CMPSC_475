@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="edu.psu.cto5068.hw_2.MainActivity">
+
+    <item
+        android:id="@+id/action_compose"
+        android:icon="@drawable/ic_create_24px"
+        android:title="@string/action_compose"
+        app:showAsAction="ifRoom"/>
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

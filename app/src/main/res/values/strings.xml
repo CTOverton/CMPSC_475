@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HW_2</string>
+    <string name="app_name">HW_4</string>
     <string name="action_settings">Settings</string>
     <string name="email">Email</string>
     <string name="emailHint">Email Address</string>
@@ -17,4 +17,6 @@
     <string name="to">To:</string>
     <string name="subject">Subject:</string>
     <string name="body"></string>
+    <string name="action_compose">compose</string>
+    <string name="action_mail">send</string>
 </resources>

@@ -1,5 +1,9 @@
 package edu.psu.cto5068.hw_2;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -7,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,7 +35,6 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
-    FloatingActionButton fab;
 
     TextView fieldEmail;
     TextView fieldEmailSubject;
@@ -45,7 +49,10 @@ public class MainActivity extends AppCompatActivity {
     TextView textSubject;
     TextView textBody;
 
-    String email = "";
+    Boolean composeToggle = true;
+    String toAddress;
+    String subject;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fab = findViewById(R.id.fab);
 
         fieldEmail = findViewById(R.id.editEmail);
         fieldEmailSubject = findViewById(R.id.editSubject);
@@ -67,18 +73,6 @@ public class MainActivity extends AppCompatActivity {
         textTo = findViewById(R.id.lblTo);
         textSubject = findViewById(R.id.lblSubject);
         textBody = findViewById(R.id.lblBody);
-
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Email Sent!", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                Log.d("Sending email", "Body: \n" + email);
-            }
-        });
-
 
         fieldEmail.addTextChangedListener(new TextWatcher() {
 
@@ -94,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 textTo.setText(String.format("To: %s", s));
+                subject = String.format("%s",s);
             }
         });
 
@@ -111,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 textSubject.setText(String.format("Subject: %s", s));
+                toAddress = String.format("%s",s);
             }
         });
 
@@ -129,7 +125,33 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void updateBody(View view) {
+    @Override
+    protected void onPause() {
+        Log.d("life_cycle", "onPause invoked");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d("life_cycle", "onStop invoked");
+        super.onStop();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d("life_cycle", "onRestoreInstanceState invoked");
+        super.onRestoreInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("life_cycle", "onSaveInstanceState invoked");
+
+    }
+
+    public String getBody(View view) {
         try {
             String structure = spinnerStructure.getSelectedItem().toString();
             Boolean min = checkGetMin.isChecked();
@@ -137,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             Boolean search = checkSearch.isChecked();
             Boolean avgCase = radioAvg.isChecked();
 
-            String output = (avgCase ? "Average Case " : "Worst Case ") + "Time Complexity for " + structure + "\n";
+            String body = (avgCase ? "Average Case " : "Worst Case ") + "Time Complexity for " + structure + "\n";
 
             InputStream is = getResources().openRawResource(R.raw.datastructuredata);
 
@@ -149,21 +171,28 @@ public class MainActivity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(json);
 
             if (min) {
-                output += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Get Min") + "\n";
+                body += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Get Min") + "\n";
             }
             if (insert) {
-                output += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Insert") + "\n";
+                body += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Insert") + "\n";
             }
             if (search) {
-                output += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Search") + "\n";
+                body += jsonObject.getJSONObject("structures").getJSONObject(structure).getJSONObject(avgCase ? "avg" : "worst").getString("Search") + "\n";
             }
 
-            textBody.setText(output);
-            email = output;
+            return body;
         } catch (IOException | JSONException e) {
             e.printStackTrace();
+            return "";
         }
     }
+
+    public void updateBody(View view) {
+        textBody.setText(getBody(view));
+
+    }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -174,16 +203,44 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        View view = findViewById(R.id.mainLayout);
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
+
+            case R.id.action_compose:
+
+                if (composeToggle) {
+                    composeToggle = !composeToggle;
+                    updateBody(view);
+                    Snackbar.make(view, "Message Composed! ",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
+                    item.setIcon(R.drawable.ic_mail_24px);
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_SENDTO);
+                    intent.setData(Uri.parse("mailto:"));
+                    intent.putExtra(Intent.EXTRA_EMAIL, new String[]{toAddress});
+                    intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                    intent.putExtra(Intent.EXTRA_TEXT, getBody(view));
+
+                    item.setIcon(R.drawable.ic_create_24px);
+                    composeToggle = !composeToggle;
+                    startActivity(intent);
+                }
+
+
+                return true;
+
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
